@@ -1,6 +1,7 @@
 """
     Pobieramy ileś tam .csv z stooq.pl do jednego foldera.
-    Skrypt tworzy DataFrame z indeksami typu "YYYY-MM-DD".
+    Skrypt tworzy macierz typu DataFrame ze współczynnikami
+    korelacji pomiędzy spółkami.
     Kolejne kolumny nazywają się jak skróty spółki,
     a każda kolumna jest wektorem spółki.
     (Stopa zwrotu w dniu 't', wzór nr 3
