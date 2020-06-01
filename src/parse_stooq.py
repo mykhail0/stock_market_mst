@@ -39,7 +39,7 @@ def merge_df(data):
     return pd.concat(data, axis = 1)
 
 
-def main(path):
+def get_correlations_matrix(path):
     companies = []
     if not path.endswith('/'):
         path = path + '/'
@@ -49,8 +49,12 @@ def main(path):
         if name.endswith('_d.csv'):
             name = name[:-6]
         companies.append(get_df(path + companyData, name))
-    print(merge_df(companies))
+    correlations = merge_df(companies).corr()
+    return correlations
 
+
+def main(path):
+    print(get_correlations_matrix(path))
 
 if __name__ == "__main__":
     args = sys.argv[1:]
