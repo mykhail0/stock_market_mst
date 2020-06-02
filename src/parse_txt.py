@@ -14,49 +14,48 @@ import pandas as pd
 from graph_tool.all import *
 
 
-def process_df(df, name):
+def process_df(df):
     # usunięcie zbędnych danych
-    for f in ['Otwarcie', 'Najwyzszy', 'Najnizszy', 'Wolumen']:
+    name = df.iloc[0]['<TICKER>']
+    for f in ['<TICKER>', '<PER>', '<TIME>', '<OPEN>', \
+              '<HIGH>', '<LOW>', '<VOL>', '<OPENINT>']:
         del df[f]
-    df['Zamkniecie'] = df['Zamkniecie'].astype(float)
-    tmp = pd.Series(df['Zamkniecie'])
 
     # obliczenie wektora spółki
-    value = df['Zamkniecie'].diff().div(tmp)
+    df['<CLOSE>'] = df['<CLOSE>'].astype(float)
+    tmp = pd.Series(df['<CLOSE>'])
+    df['<CLOSE>'] = df['<CLOSE>'].diff().div(tmp)
 
     # zamiana indeksów
-    df = df.assign(Zamkniecie = value).set_index('Data')
-
-    # zmiany wizualne w DataFrame
-    df.rename(columns = {'Zamkniecie': name}, inplace=True)
+    df = df.set_index('<DATE>')
     df.index.names = [None]
+
+    # zmiana nazewnictwa
+    df.rename(columns = {'<CLOSE>': name}, inplace = True)
     return df
 
 
-get_df = lambda path, name: process_df(pd.read_csv(path), name)
+get_df = lambda path: process_df(pd.read_csv(path))
 
 
 def merge_df(data):
     return pd.concat(data, axis = 1)
 
 
-def get_correlations_matrix(path):
+def get_correlation_matrix(path):
     companies = []
     if not path.endswith('/'):
         path = path + '/'
 
     for companyData in os.listdir(path):
-        name = companyData
-        if name.endswith('_d.csv'):
-            name = name[:-6]
-        companies.append(get_df(path + companyData, name))
+        companies.append(get_df(path + companyData))
+
     correlations = merge_df(companies).corr()
     return correlations
 
 
 def main(path):
-    print(get_correlations_matrix(path))
-
+    print(get_correlation_matrix(path))
 
 if __name__ == "__main__":
     args = sys.argv[1:]
