@@ -19,6 +19,9 @@ def get_edge_list(matrix):
         i += 1
     return ans
 
+def get_edge_property_map(matrix):
+    #
+
 
 def main(path):
     print(get_edge_list(get_correlation_matrix(path)))

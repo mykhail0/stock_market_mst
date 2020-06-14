@@ -1,7 +1,7 @@
 import sys
 import pandas as pd
 from graph_tool.all import *
-from process_matrix import get_edge_list
+from process_matrix import get_edge_list, get_edge_property_map
 from parse_txt import get_correlation_matrix
 
 
@@ -13,6 +13,8 @@ def make_graph(matrix):
     #idk why ale gdy wyrzuciem string_vals = True, to zaczelo dzialac, stara wersja:
     #g.add_edge_list(edges, hashed = True, string_vals = True, eprops = eprops)
     g.add_edge_list(edges, hashed=True,eprops=eprops)
+    #todo - zrobić funkcję odpowiadającą za wagi
+    weights = get_edge_property_map(matrix)
     tree_map = min_spanning_tree(g, weights = weights, vertex = g.vertex(0))
     return g
 
