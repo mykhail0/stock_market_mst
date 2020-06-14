@@ -10,7 +10,9 @@ def make_graph(matrix):
     eprops = [g.new_ep("float")]
     edges = get_edge_list(matrix)
 #nwm czemu ale tu odmawia dzialania
-    g.add_edge_list(edges, hashed = True, string_vals = True, eprops = eprops)
+    #idk why ale gdy wyrzuciem string_vals = True, to zaczelo dzialac, stara wersja:
+    #g.add_edge_list(edges, hashed = True, string_vals = True, eprops = eprops)
+    g.add_edge_list(edges, hashed=True,eprops=eprops)
     tree_map = min_spanning_tree(g, weights = weights, vertex = g.vertex(0))
     return g
 
