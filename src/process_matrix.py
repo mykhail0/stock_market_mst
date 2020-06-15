@@ -2,7 +2,9 @@ import numpy as np
 import sys
 import pandas as pd
 from graph_tool.all import *
+from graph_tool import new_edge_property
 from parse_txt import get_correlation_matrix
+from math import sqrt, isnan
 
 
 def get_edge_list(matrix):
@@ -19,8 +21,36 @@ def get_edge_list(matrix):
         i += 1
     return ans
 
-def get_edge_property_map(matrix):
-    #
+def calculate_vertices_distance(correlation):
+    # Liczy odległość między spółkami w metryce ze źródeł
+    # zakłada, że wsp. korelacji są mniejsze od 1, 
+    # w innym wypadku przyjmuje ich wartość jako 1.
+    # Jeśli trafił się NaN, przyjmujemy że to współczynnik o wartości 0.
+    if isnan(correlation):
+        return calculate_vertices_distance(0)
+    elif correlation > 1:
+        return calculate_vertices_distance(1)
+    else:
+        return sqrt(2 * (1 - correlation))
+
+def get_weights_edge_property_map(matrix, graph):
+# tworzy obiekt edge_property_map z wagami krawędzi
+# na podstawie tablicy współczynników korelacji
+# UWAGA - wersja beta, zaklada że wierzchołki są numerowane po kolei,
+# 0 to pierwsza firma w rzędzie/kolumnie, 1 druga itd.
+    weights_map = graph.new_edge_property("short")
+    # totalna januszerka, ale nie umiem zmienić wierchołka w liczbę
+    source_index = 0
+    target_index = 1
+    for edge in graph.edges():
+        correlation = matrix.iat[source_index, target_index]
+        weights_map[edge] = calculate_vertices_distance(correlation)
+        target_index += 1
+        if(target_index == graph.num_vertices()):
+            source_index += 1
+            target_index = source_index + 1
+    return weights_map
+
 
 
 def main(path):
