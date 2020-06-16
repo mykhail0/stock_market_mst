@@ -12,7 +12,8 @@ def make_graph(matrix):
 #nwm czemu ale tu odmawia dzialania
     #idk why ale gdy wyrzuciem string_vals = True, to zaczelo dzialac, stara wersja:
     #g.add_edge_list(edges, hashed = True, string_vals = True, eprops = eprops)
-    g.add_edge_list(edges, hashed=True,eprops=eprops)
+    # zwraca mape dla wierzchokow
+    Vprop = g.add_edge_list(edges, hashed=True, eprops=eprops)
     weights = get_weights_edge_property_map(matrix, g)
     #Usunąłem vertex z argumentów, teraz tworzy za pomocą algorytmu Kruskala.
     tree_map = min_spanning_tree(g, weights = weights)
