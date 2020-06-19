@@ -25,7 +25,7 @@ def make_graph(matrix):
 
 
 def main(path):
-    g = make_graph(mat.calc_correlations(mat.calc_vectors(get_matrix(path))))
+    g = make_graph(mat.calc_correlations(get_matrix(path)))
 
 
 if __name__ == "__main__":

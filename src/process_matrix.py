@@ -21,9 +21,8 @@ def calc_vectors(matrix):
     return matrix.diff().div(tmp)
 
 def calc_correlations(matrix):
-    # Liczy współczynniki korelacji dla danego DataFrame.
-    # Np. matrix to wektory spółek
-    return matrix.corr()
+    # Oblicza dla spółek ich wektory i wylicza korelacje
+    return calc_vectors(matrix).corr()
 
 
 def get_edge_list(matrix):
@@ -73,7 +72,7 @@ def get_weights_edge_property_map(matrix, graph):
 
 
 def main(path: str):
-    print(calc_vectors(get_matrix(path)))
+    print(calc_correlations(get_matrix(path)))
 
 
 if __name__ == "__main__":
