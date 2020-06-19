@@ -1,15 +1,35 @@
-import numpy as np
+"""
+    Moduł oferuje funkcje przetwarzające DataFrame wektorów spółek.
+    Jest pewnym mostem pomiędzy raw "tablicową" reprezentacją danych spółek
+    a grafową reprezentacją.
+"""
+import os
 import sys
+import numpy as np
 import pandas as pd
 from graph_tool.all import *
 from graph_tool import new_edge_property
-from parse_txt import get_correlation_matrix
 from math import sqrt, isnan
+
+from general_parser_functions import get_matrix
+
+
+def calc_vectors(matrix):
+    # TODO wycisnąć tu część roboty preprocess_df
+    # Liczy wektor spółki na podstawie danych.
+    # (wg trzeciej metody w pracy magisterskiej Sienkiewicza)
+    pass
+
+def calc_correlations(matrix):
+    # Liczy współczynniki korelacji dla danego DataFrame.
+    # Np. matrix to wektory spółek
+    return matrix.corr()
 
 
 def get_edge_list(matrix):
 # tworzy listę krawędzi
-    ans = np.empty(shape = (matrix.shape[0] * (matrix.shape[0] - 1) // 2, 3), dtype = object)
+    ans = np.empty(shape = (matrix.shape[0] * (matrix.shape[0] - 1) // 2, 3),
+                   dtype = object)
     i = 1
     count = 0
     for row in matrix.itertuples():
@@ -52,14 +72,14 @@ def get_weights_edge_property_map(matrix, graph):
     return weights_map
 
 
-
-def main(path):
-    print(get_edge_list(get_correlation_matrix(path)))
+def main(path: str):
+    #print(calc_vectors(get_matrix(path)))
+    pass
 
 
 if __name__ == "__main__":
     args = sys.argv[1:]
     if len(args) != 1:
-        exit("Usage: python script.py path/to/Excel/sheet.xls")
+        exit("Usage: python script.py path/to/directory/with/sheets.cvs")
 
     sys.exit(main(args[0]))
