@@ -15,10 +15,10 @@ from general_parser_functions import get_matrix
 
 
 def calc_vectors(matrix):
-    # TODO wycisnąć tu część roboty preprocess_df
     # Liczy wektor spółki na podstawie danych.
     # (wg trzeciej metody w pracy magisterskiej Sienkiewicza)
-    pass
+    tmp = pd.DataFrame(matrix)
+    return matrix.diff().div(tmp)
 
 def calc_correlations(matrix):
     # Liczy współczynniki korelacji dla danego DataFrame.
@@ -73,8 +73,7 @@ def get_weights_edge_property_map(matrix, graph):
 
 
 def main(path: str):
-    #print(calc_vectors(get_matrix(path)))
-    pass
+    print(calc_vectors(get_matrix(path)))
 
 
 if __name__ == "__main__":

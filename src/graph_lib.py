@@ -1,7 +1,10 @@
 import sys
 import pandas as pd
 from graph_tool.all import *
+
+
 import process_matrix as mat
+from general_parser_functions import get_matrix
 
 
 def make_graph(matrix):
@@ -16,13 +19,13 @@ def make_graph(matrix):
     # Usunąłem vertex z argumentów, teraz tworzy za pomocą algorytmu Kruskala.
     tree_map = min_spanning_tree(g, weights = weights)
     # Wypisywanie drzewa:
-    # u = GraphView(g, efilt=tree_map)
-    # graph_draw(u)
+    u = GraphView(g, efilt=tree_map)
+    graph_draw(u)
     return g
 
 
 def main(path):
-    g = make_graph(mat.calc_correlations(mat.get_matrix(path)))
+    g = make_graph(mat.calc_correlations(mat.calc_vectors(get_matrix(path))))
 
 
 if __name__ == "__main__":

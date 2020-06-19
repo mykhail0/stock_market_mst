@@ -3,8 +3,6 @@
         przetwarzanie pliku .txt z archiwum pobranego ze stooq.pl
         (tzn. filtrowanie niepotrzebnych danych,
          zmiana nazewnictwa kolumn/wierszy).
-
-    TODO na razie też liczy wektory ale trzeba to zepchnąć na process_matrix
 """
 import os
 import sys
@@ -22,10 +20,6 @@ def preprocess_df(df):
         del df[f]
 
     df['<CLOSE>'] = df['<CLOSE>'].astype(float)
-
-    # to najlepiej wyniesc do process matrix do funkcji calc_vectors()
-    tmp = pd.Series(df['<CLOSE>'])
-    df['<CLOSE>'] = df['<CLOSE>'].diff().div(tmp)
 
     # zamiana indeksów
     df = df.set_index('<DATE>')
