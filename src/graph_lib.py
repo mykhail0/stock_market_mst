@@ -8,17 +8,16 @@ def make_graph(matrix):
     g = Graph(directed = False)
     eprops = [g.new_ep("float")]
     edges = mat.get_edge_list(matrix)
-#nwm czemu ale tu odmawia dzialania
-    #idk why ale gdy wyrzuciem string_vals = True, to zaczelo dzialac, stara wersja:
-    #g.add_edge_list(edges, hashed = True, string_vals = True, eprops = eprops)
+    # idk why ale gdy wyrzuciem string_vals = True, to zaczelo dzialac, stara wersja:
+    # g.add_edge_list(edges, hashed = True, string_vals = True, eprops = eprops)
     # zwraca mape dla wierzchokow
     Vprop = g.add_edge_list(edges, hashed=True, eprops=eprops)
     weights = mat.get_weights_edge_property_map(matrix, g)
-    #Usunąłem vertex z argumentów, teraz tworzy za pomocą algorytmu Kruskala.
+    # Usunąłem vertex z argumentów, teraz tworzy za pomocą algorytmu Kruskala.
     tree_map = min_spanning_tree(g, weights = weights)
-    #Wypisywanie drzewa:
-    u = GraphView(g, efilt=tree_map)
-    graph_draw(u)
+    # Wypisywanie drzewa:
+    # u = GraphView(g, efilt=tree_map)
+    # graph_draw(u)
     return g
 
 
