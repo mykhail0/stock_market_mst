@@ -13,12 +13,19 @@ from math import sqrt, isnan
 
 from general_parser_functions import get_matrix
 
+#ucina daty w formacie RRRRMMDD
+def cut_time_dataframe(df,start: str,end: str):
+    return df.loc[start : end]
 
 def calc_vectors(matrix):
     # Liczy wektor spółki na podstawie danych.
     # (wg trzeciej metody w pracy magisterskiej Sienkiewicza)
     tmp = pd.DataFrame(matrix)
+    #obciecie dataframe do danych od poczatku 2020
+    tmp= cut_time_dataframe(tmp,'20200000','30000000')
+
     return matrix.diff().div(tmp)
+
 
 def calc_correlations(matrix):
     # Oblicza dla spółek ich wektory i wylicza korelacje
