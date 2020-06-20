@@ -23,7 +23,8 @@ def calc_vectors(matrix):
     tmp = pd.DataFrame(matrix)
     #obciecie dataframe do danych od poczatku 2020
     tmp= cut_time_dataframe(tmp,'20200000','30000000')
-
+    #usuwanie spolek z NaN-ami
+    tmp=rm_companies_w_little_data(0,tmp)
     return matrix.diff().div(tmp)
 
 
@@ -94,7 +95,7 @@ def get_weights_edge_property_map(matrix, graph):
 
 
 def main(path: str):
-    print(rm_companies_w_little_data(0.2, get_matrix(path)))
+    print(rm_companies_w_little_data(0, cut_time_dataframe(get_matrix(path),'20200000','30000000')))
 
 
 if __name__ == "__main__":
