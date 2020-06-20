@@ -33,7 +33,6 @@ def preprocess_df(df):
 
 def main():
     print("This module offers too specific functions")
-    pass
 
 if __name__ == "__main__":
     sys.exit(main())

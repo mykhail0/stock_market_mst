@@ -24,6 +24,21 @@ def calc_correlations(matrix):
     # Oblicza dla spółek ich wektory i wylicza korelacje
     return calc_vectors(matrix).corr()
 
+def rm_companies_w_little_data(percent: int, matrix):
+    # percent to liczba z przedziału [0, 1]
+    # Usuwane są kolumny z liczbą komórek NaN przekraczającą
+    # podany procent.
+    # Trzeba uważać na procent, bo każda spółka ma w weekendy NaN'y
+    # BTW totalnie niewydajne i mocno Pythonowe
+    rows_number = len(matrix.index)
+    columns_to_delete = []
+
+    for f in matrix.columns.values.tolist():
+        if matrix[f].isna().sum() / rows_number > percent:
+            columns_to_delete.append(f)
+
+    return matrix.drop(columns_to_delete, axis = 1)
+
 
 def get_edge_list(matrix):
 # tworzy listę krawędzi
@@ -72,7 +87,7 @@ def get_weights_edge_property_map(matrix, graph):
 
 
 def main(path: str):
-    print(calc_correlations(get_matrix(path)))
+    print(rm_companies_w_little_data(0.2, get_matrix(path)))
 
 
 if __name__ == "__main__":
