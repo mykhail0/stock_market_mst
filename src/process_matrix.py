@@ -73,7 +73,8 @@ def calculate_vertices_distance(correlation):
     elif correlation > 1:
         return calculate_vertices_distance(1)
     else:
-        return sqrt(2 * (1 - correlation))
+        # *10 eby linie w wyswietlanym grafie byly odpowiedniej grubosci
+        return 10*sqrt(2 * (1 - correlation))
 
 def get_weights_edge_property_map(matrix, graph):
 # tworzy obiekt edge_property_map z wagami krawędzi
