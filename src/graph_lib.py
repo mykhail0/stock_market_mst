@@ -21,19 +21,23 @@ def make_graph(matrix):
     g = Graph(directed = False)
     eprops = [g.new_ep("float")]
     edges = mat.get_edge_list(matrix)
-    # idk why ale gdy wyrzuciem string_vals = True, to zaczelo dzialac, stara wersja:
-    # g.add_edge_list(edges, hashed = True, string_vals = True, eprops = eprops)
     # zwraca mape dla wierzchokow
     Vprop = g.add_edge_list(edges, hashed=True, eprops=eprops)
-    weights = mat.get_weights_edge_property_map(matrix, g)
-    # Usunąłem vertex z argumentów, teraz tworzy za pomocą algorytmu Kruskala.
-    tree_map = min_spanning_tree(g, weights=weights)
-    print_mst(g, matrix, tree_map,weights)
     return g
 
 
+def test_func(path):
+    correlations = mat.extract_companies_correlations(path)
+    g = make_graph(correlations)
+    weights = mat.get_weights_edge_property_map(correlations, g)
+    tree_map = min_spanning_tree(g, weights=weights)
+    print_mst(g, correlations, tree_map, weights)
+
+
+
 def main(path):
-    g = make_graph(mat.calc_correlations(get_matrix(path)))
+    test_func(path)
+
 
 
 if __name__ == "__main__":

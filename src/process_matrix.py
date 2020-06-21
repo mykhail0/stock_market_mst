@@ -13,26 +13,13 @@ from math import sqrt, isnan
 
 from general_parser_functions import get_matrix
 
-#ucina daty w formacie RRRRMMDD
-def cut_time_dataframe(df,start: str,end: str):
+
+def cut_time_dataframe(df, start: str, end: str):
+    # Ucina daty w formacie RRRRMMDD
     return df.loc[start : end]
 
-def calc_vectors(matrix):
-    # Liczy wektor spółki na podstawie danych.
-    # (wg trzeciej metody w pracy magisterskiej Sienkiewicza)
-    tmp = pd.DataFrame(matrix)
-    #obciecie dataframe do danych od poczatku 2020
-    tmp= cut_time_dataframe(tmp,'20200000','30000000')
-    #usuwanie spolek z NaN-ami
-    tmp=rm_companies_w_little_data(0,tmp)
-    return matrix.diff().div(tmp)
 
-
-def calc_correlations(matrix):
-    # Oblicza dla spółek ich wektory i wylicza korelacje
-    return calc_vectors(matrix).corr()
-
-def rm_companies_w_little_data(percent: int, matrix):
+def rm_companies_w_little_data(matrix, percent: float):
     # percent to liczba z przedziału [0, 1]
     # Usuwane są kolumny z liczbą komórek NaN przekraczającą
     # podany procent.
@@ -46,6 +33,23 @@ def rm_companies_w_little_data(percent: int, matrix):
             columns_to_delete.append(f)
 
     return matrix.drop(columns_to_delete, axis = 1)
+
+
+def calc_vectors(matrix):
+    # Liczy wektor spółki na podstawie danych.
+    # (wg trzeciej metody w pracy magisterskiej Sienkiewicza)
+    tmp = pd.DataFrame(matrix)
+    return matrix.diff().div(tmp)
+
+
+# TL;DR daje macierz ze wsp. korelacji spółek.
+def extract_companies_correlations(path: str, start = '20200000', end = '30000000', percent = 0):
+    # Z arkuszy w ścieżce `path` wyciąga DataFrame z
+    # interesującymi nas notowaniami w kolejnych dniach dla wszystkich firm.
+    # Następnie ucina DF do interesującego nas przedziału,
+    # a potem odrzuca z DF firmy, które mają procent NaN-ów, przekraczający
+    # `percent`. Dalej wylicza wektory spółek, po czym korelacje spółek.
+    return calc_vectors(rm_companies_w_little_data(cut_time_dataframe(get_matrix(path), start, end), percent)).corr()
 
 
 def get_edge_list(matrix):
@@ -63,6 +67,7 @@ def get_edge_list(matrix):
         i += 1
     return ans
 
+
 def calculate_vertices_distance(correlation):
     # Liczy odległość między spółkami w metryce ze źródeł
     # zakłada, że wsp. korelacji są mniejsze od 1, 
@@ -73,8 +78,9 @@ def calculate_vertices_distance(correlation):
     elif correlation > 1:
         return calculate_vertices_distance(1)
     else:
-        # *10 eby linie w wyswietlanym grafie byly odpowiedniej grubosci
-        return 10*sqrt(2 * (1 - correlation))
+        # *10 żeby linie w wyświetlanym grafie były odpowiedniej grubości
+        return 10 * sqrt(2 * (1 - correlation))
+
 
 def get_weights_edge_property_map(matrix, graph):
 # tworzy obiekt edge_property_map z wagami krawędzi
@@ -94,6 +100,7 @@ def get_weights_edge_property_map(matrix, graph):
             target_index = source_index + 1
     return weights_map
 
+
 def get_vertex_names(graph, matrix):
 #zakłada, że wierzchołki są tworzone po kolei
     names = graph.new_vertex_property("string")
@@ -103,8 +110,9 @@ def get_vertex_names(graph, matrix):
         vertex_count += 1
     return names
 
+
 def main(path: str):
-    print(rm_companies_w_little_data(0, cut_time_dataframe(get_matrix(path),'20200000','30000000')))
+    print(extract_companies_correlations(path))
 
 
 if __name__ == "__main__":
