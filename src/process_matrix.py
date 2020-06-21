@@ -93,6 +93,14 @@ def get_weights_edge_property_map(matrix, graph):
             target_index = source_index + 1
     return weights_map
 
+def get_vertex_names(graph, matrix):
+#zakłada, że wierzchołki są tworzone po kolei
+    names = graph.new_vertex_property("string")
+    vertex_count = 0
+    for vertex in graph.vertices():
+        names[vertex] = matrix.columns.values[vertex_count]
+        vertex_count += 1
+    return names
 
 def main(path: str):
     print(rm_companies_w_little_data(0, cut_time_dataframe(get_matrix(path),'20200000','30000000')))
