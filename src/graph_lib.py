@@ -4,7 +4,7 @@ from graph_tool.all import *
 
 
 import process_matrix as mat
-from general_parser_functions import get_matrix
+
 
 def print_mst(graph, matrix, tree_map, weights):
     # PropertyMap z nazwami spółek
