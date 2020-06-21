@@ -6,7 +6,7 @@ from graph_tool.all import *
 import process_matrix as mat
 from general_parser_functions import get_matrix
 
-def print_mst(graph, matrix, tree_map,weights):
+def print_mst(graph, matrix, tree_map, weights):
     # PropertyMap z nazwami spółek
     # todo np. wypisywanie nazw tylko wierzcholkow o danych stopniach
     default_font_size = 9
@@ -26,8 +26,8 @@ def make_graph(matrix):
     return g
 
 
-def test_func(path):
-    correlations = mat.extract_companies_correlations(path)
+def test_func(path: str, start: str, end: str):
+    correlations = mat.extract_companies_correlations(path, start, end)
     g = make_graph(correlations)
     weights = mat.get_weights_edge_property_map(correlations, g)
     tree_map = min_spanning_tree(g, weights=weights)
@@ -36,7 +36,7 @@ def test_func(path):
 
 
 def main(path):
-    test_func(path)
+    test_func(path, '20200000', '30000000')
 
 
 
