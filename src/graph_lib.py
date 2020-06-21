@@ -6,7 +6,7 @@ from graph_tool.all import *
 import process_matrix as mat
 from general_parser_functions import get_matrix
 
-def print_mst(graph, matrix, tree_map):
+def print_mst(graph, matrix, tree_map,weights):
     # PropertyMap z nazwami spółek
     # todo np. wypisywanie nazw tylko wierzcholkow o danych stopniach
     default_font_size = 9
@@ -14,7 +14,7 @@ def print_mst(graph, matrix, tree_map):
     vertex_names_size = graph.new_vertex_property("int", vals=default_font_size)
     # Wypisywanie drzewa:
     u = GraphView(graph, efilt=tree_map)
-    graph_draw(u, vertex_text=vertex_names, vertex_font_size=vertex_names_size)
+    graph_draw(u, vertex_text=vertex_names, vertex_font_size=vertex_names_size,ecolor=weights,edge_pen_width=weights)
 
 
 def make_graph(matrix):
@@ -28,7 +28,7 @@ def make_graph(matrix):
     weights = mat.get_weights_edge_property_map(matrix, g)
     # Usunąłem vertex z argumentów, teraz tworzy za pomocą algorytmu Kruskala.
     tree_map = min_spanning_tree(g, weights=weights)
-    print_mst(g, matrix, tree_map)
+    print_mst(g, matrix, tree_map,weights)
     return g
 
 

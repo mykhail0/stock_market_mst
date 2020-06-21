@@ -80,7 +80,7 @@ def get_weights_edge_property_map(matrix, graph):
 # na podstawie tablicy współczynników korelacji
 # UWAGA - wersja beta, zaklada że wierzchołki są numerowane po kolei,
 # 0 to pierwsza firma w rzędzie/kolumnie, 1 druga itd.
-    weights_map = graph.new_edge_property("short")
+    weights_map = graph.new_edge_property("float")
     # totalna januszerka, ale nie umiem zmienić wierchołka w liczbę
     source_index = 0
     target_index = 1
