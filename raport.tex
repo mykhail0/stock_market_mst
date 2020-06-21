@@ -1,0 +1,78 @@
+\documentclass{article}
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\title{Generowanie minimalnego drzewa rozpinającego dla podanych spółek}
+\author{
+    Adam Boguszewski \and
+    Mykhailo Shevchenko \and
+    Wiktor Zdrojewski
+}
+\date{21 czerwca 2020}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Streszczenie}
+Stworzyliśmy programik, który potrafi przetworzyć arkusze kalkulacyjne
+na minimalne drzewo rozpinające. Pojedyńczy arkusz ma zawierać notowania
+spółki wraz z datami, w których te notowania zostały pobrane.
+
+\section{Jak korzystać z programu}
+Program ma całkiem prosty interfejs i na razie nie oferuje dużo możliwości
+dla użytkownika. Program dostaje 3 argumenty:
+
+Jako pierwszy argument dostaje ścieżkę do folderu, gdzie
+znajdują się arkusze kalkulacyjne z danami o firmach, jedna firma per arkusz.
+
+Kolejne dwa argumenty są w postaci YYYYMMDD i oznaczają przedział czasowy,
+z którego będą rozważane notowania.
+
+Przykładowe wywołanie:\newline
+./program ../data/gielda/wse\_stocks 20200000 20200621
+
+W wyniku obliczeń program wyświetla minimalne drzewo rozpinające spółek.
+
+\section{Źródło danych}
+Działanie programu jest zależne od postaci danych w arkuszu kalkulacyjnym.
+Na stan teraźniejszy program jest w stanie obsłużyć jedynie jedno źródło danych
+(natomiast łatwo dodać obsługę danych z innych źródeł, tworząc odpowiednią funkcję parsującą plik).
+Dane można pobrać z danej strony\newline
+https://stooq.pl/db/h/?fbclid=IwAR1qQ\_xn5ryHV-McmCWIVlk-tnhERoyKog9u-O3Zw4QjDqO5mxRtTNF2K5U\newline
+Należy pobrać archiwum i potem go rozpakować. Archiwum może być dowolne, byle by z kolumny Dzienne ASCII.
+
+\section{Opis działania programu}
+Program pobiera ceny zamknięcia z każdego dnia z każdego arkusza z podanej ścieżki.
+Zatem tworzy tablicę spółek, w której są przechowywane te wartości, po czym
+ucina tablicę zgodnie z podanym przedziałem czasowym.
+
+Następnie program usuwa z tablicy firmy, które
+nie mają podanych notowań dla dużej liczby dni.
+Program dla każdej spółki rozważa stosunek dni bez notowań do
+liczby dni w przedziale czasowym i jeśli ten stosunek przekracza pewien próg,
+ustalony wewnątrz programu, to dana spółka nie jest rozważana w dalszym działaniu programu.
+Aktualnie próg jest ustalony na $0\%$, tzn. wszystkie firmy, które mają chociaż jeden dzień
+nie odnotowany, są usuwane.
+
+W kolejnym kroku program oblicza wektor dla każdej spółki na podstawie cen zamknięcia.
+Wektorem jest względna zmiana ceny, czyli stopa zwrotu:
+$$ R(t) = \frac{Z(t+dt)-Z(t)}{Z(t)},$$
+gdzie $Z(t)$ to cena zamknięcią w dniu $t$, a $dt$ w naszym przypadku będzie równe $1$.
+
+Potem obliczane są współczynniki korelacji i odległości zgodnie ze wzorem
+$$ d(X, Y) = \sqrt{2(1 - p(X, Y))}, $$
+gdzie $p(X,Y)$ to współczynnik korelacji Pearsona pomiędzy spółkami $X$ i $Y$.
+Na podstawie tej tablicy w następnym kroku wykonywania programu powstaje
+ważona klika, gdzie wierzchołki to nazwy spółek, a krawędź pomiędzy $X$ i $Y$
+ma wagę równą $d(X, Y)$. Ta klika jest przekształcana algorytmem Kruskala
+i dostajemy drzewo minimalnej rozpiętości.
+
+Projekt został napisany w Python'ie.
+Do przetwarzania tablic i arkuszów została użyta biblioteka \textsl{pandas}.
+Do tworzenia, przetwarzania i wypisywania grafów została użyta biblioteka \textsl{graph tool}.
+
+
+\end{document}
