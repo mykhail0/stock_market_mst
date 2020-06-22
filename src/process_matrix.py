@@ -7,11 +7,34 @@ import os
 import sys
 import numpy as np
 import pandas as pd
+#needed for plots
+import matplotlib.pyplot as pyplot
+
 from graph_tool.all import *
 from graph_tool import new_edge_property
 from math import sqrt, isnan
 
 from general_parser_functions import get_matrix
+def show_vertex_degree(graph,tree_map):
+    max=0
+    for v in graph.vertices():
+        k=v.out_degree(tree_map)
+        if k>max:
+            max=k
+    sum=[]
+    i=0
+    while i<max+1:
+        sum.append(0)
+        i+=1
+    for v in graph.vertices():
+        sum[v.out_degree(tree_map)]+=1
+    df=pd.DataFrame(data=sum,columns=['ilosc wezlow'])
+    df=df.loc[~(df==0).all(axis=1)]
+    df['stopien'] = df.index
+    df.plot(x='stopien',y='ilosc wezlow',kind='scatter')
+    pyplot.yscale('log')
+    pyplot.show()
+
 
 
 def cut_time_dataframe(df, start: str, end: str):
