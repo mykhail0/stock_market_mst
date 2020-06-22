@@ -1,0 +1,5 @@
+# Funkcje przydatne w wyliczaniu wektorów
+numpy == 1.13.3
+
+# Do przetwarzania DataFrame
+pandas == 1.0.4
