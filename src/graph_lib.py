@@ -14,7 +14,8 @@ def print_mst(graph, matrix, tree_map, weights):
     vertex_names_size = graph.new_vertex_property("int", vals=default_font_size)
     # Wypisywanie drzewa:
     u = GraphView(graph, efilt=tree_map)
-    graph_draw(u, vertex_text=vertex_names, vertex_font_size=vertex_names_size, edge_color=weights, edge_pen_width=weights)
+    graph_draw(u, vertex_text=vertex_names, vertex_font_size=vertex_names_size,
+               edge_color=weights, edge_pen_width=weights)
 
 
 def make_graph(matrix):
@@ -32,6 +33,7 @@ def test_func(path: str, start: str, end: str):
     weights = mat.get_weights_edge_property_map(correlations, g)
     tree_map = min_spanning_tree(g, weights=weights)
     print_mst(g, correlations, tree_map, weights)
+    mat.show_vertex_degree(g, tree_map)
 
 
 
