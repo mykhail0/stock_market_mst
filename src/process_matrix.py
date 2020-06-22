@@ -16,19 +16,21 @@ from math import sqrt, isnan
 
 from general_parser_functions import get_matrix
 
-def show_vertex_degree(graph, tree_map):
+def show_vertex_degree(graph):
     max = 0
     for v in graph.vertices():
-        k = v.out_degree(tree_map)
+        k = v.out_degree()
         if k > max:
             max = k
+
     sum = []
     i = 0
     while i < max + 1:
         sum.append(0)
         i += 1
     for v in graph.vertices():
-        sum[v.out_degree(tree_map)] += 1
+        sum[v.out_degree()] += 1
+
     df = pd.DataFrame(data=sum, columns=['vertex count'])
     df = df.loc[~(df==0).all(axis=1)]
     df['degree'] = df.index

@@ -2,18 +2,18 @@ import sys
 import pandas as pd
 from graph_tool.all import *
 
-
 import process_matrix as mat
 
-def print_mst(mst, matrix):
+
+def print_mst(g, matrix):
     default_font_size = 9
-    vertex_names = mat.get_vertex_names(mst, matrix)
-    vertex_names_size = mst.new_vertex_property("int", vals=default_font_size)
+    vertex_names = mat.get_vertex_names(g, matrix)
+    vertex_names_size = g.new_vertex_property("int", vals=default_font_size)
     # Wypisywanie drzewa:
-    u = GraphView(mst)
+    u = GraphView(g)
     graph_draw(u, vertex_text=vertex_names, vertex_font_size=vertex_names_size,
-               edge_color=mst.edge_properties["weights"],
-               edge_pen_width=mst.edge_properties["weights"])
+               edge_color=g.edge_properties["weights"],
+               edge_pen_width=g.edge_properties["weights"])
 
 
 def make_mst(graph):
@@ -37,13 +37,20 @@ def make_graph(matrix):
     return g
 
 
+def centrality_measures(g):
+    vertex_bw, edge_bw = betweenness(g)
+    print("central point dominance is:")
+    print(central_point_dominance(g, vertex_bw))
+
+
 def test_func(path: str, start: str, end: str):
     correlations = mat.extract_companies_correlations(path, start, end)
     g = make_graph(correlations)
     mst = make_mst(g)
-    print_mst(mst, correlations)
-    mat.show_vertex_degree(g, g.edge_properties["tree"])
 
+    centrality_measures(mst)
+    print_mst(mst, correlations)
+    mat.show_vertex_degree(mst)
 
 
 def main(path):
