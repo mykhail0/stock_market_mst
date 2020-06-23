@@ -70,7 +70,7 @@ def calc_vectors(matrix):
 
 
 # TL;DR daje macierz ze wsp. korelacji spółek.
-def extract_companies_correlations(path: str, start = '20200000', end = '30000000', percent = 0):
+def extract_companies_correlations(path: str, start = '20200000', end = '30000000', percent = 0.2):
     # Z arkuszy w ścieżce `path` wyciąga DataFrame z
     # interesującymi nas notowaniami w kolejnych dniach dla wszystkich firm.
     # Następnie ucina DF do interesującego nas przedziału,
