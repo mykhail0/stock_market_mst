@@ -36,6 +36,7 @@ def show_vertex_degree(graph):
     df['degree'] = df.index
     df.plot(x='degree', y='vertex count', kind='scatter')
     pyplot.yscale('log')
+    pyplot.xscale('log')
     pyplot.show()
 
 
