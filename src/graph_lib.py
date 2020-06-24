@@ -9,6 +9,7 @@ def print_mst(g, matrix):
     default_font_size = 9
     vertex_names = mat.get_vertex_names(g, matrix)
     vertex_names_size = g.new_vertex_property("int", vals=default_font_size)
+    mat.top_n(g, 5, vertex_names)
     # Wypisywanie drzewa:
     u = GraphView(g)
     graph_draw(u, vertex_text=vertex_names, vertex_font_size=vertex_names_size,
@@ -39,7 +40,7 @@ def make_graph(matrix):
 
 def centrality_measures(g):
     vertex_bw, edge_bw = betweenness(g)
-    print("central point dominance is:")
+    print("central point dominance fot betweness is:")
     print(central_point_dominance(g, vertex_bw))
 
 

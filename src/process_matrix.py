@@ -16,6 +16,28 @@ from math import sqrt, isnan
 
 from general_parser_functions import get_matrix
 
+def top_n(graph,n,vertex_names):
+    top=[]
+    l=0
+    while l<n:
+        max_vertex_value=0
+        max_vertex= None
+        for v in graph.vertices():
+            ok=0
+            for i in top:
+                if i==v:
+                    ok=1
+            k=v.out_degree()
+            if ok==0 and max_vertex_value < k:
+                max_vertex=v
+                max_vertex_value=k
+        top.append(max_vertex)
+        l+=1
+    for i in top:
+        print(vertex_names[i],' ',i.out_degree())
+
+
+
 def show_vertex_degree(graph):
     max = 0
     for v in graph.vertices():
