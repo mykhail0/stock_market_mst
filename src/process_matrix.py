@@ -16,29 +16,32 @@ from math import sqrt, isnan
 
 from general_parser_functions import get_matrix
 
+def make_plot(arguments, values, ylabel: str):
+    pyplot.plot(arguments, values, 'ro')
+    pyplot.xlabel('dates')
+    pyplot.ylabel(ylabel)
+    pyplot.xticks(rotation=90)
+    pyplot.tight_layout()
+    pyplot.savefig(ylabel+'.png')
 
-def show_vertex_degree(graph):
-    max = 0
-    for v in graph.vertices():
-        k = v.out_degree()
-        if k > max:
-            max = k
-
-    sum = []
-    i = 0
-    while i < max + 1:
-        sum.append(0)
-        i += 1
-    for v in graph.vertices():
-        sum[v.out_degree()] += 1
-
-    df = pd.DataFrame(data=sum, columns=['vertex count'])
+def show_vertex_degree(degrees):
+    df = pd.DataFrame(data=degrees, columns=['vertex count'])
     df = df.loc[~(df==0).all(axis=1)]
     df['degree'] = df.index
     df.plot(x='degree', y='vertex count', kind='scatter')
     pyplot.yscale('log')
     pyplot.xscale('log')
     pyplot.show()
+
+def show_vertex_mol(mols):
+    df = pd.DataFrame(data=mols, columns=['vertex count'])
+    df = df.loc[~(df==0).all(axis=1)]
+    df['mol'] = df.index
+    df.plot(x='mol', y='vertex count', kind='scatter')
+    pyplot.yscale('log')
+    pyplot.xscale('log')
+    pyplot.show()
+
 
 
 def cut_time_dataframe(df, start: str, end: str):

@@ -1,4 +1,6 @@
+import math
 import sys
+import numpy as np
 import pandas as pd
 from graph_tool.all import *
 
@@ -51,12 +53,14 @@ def compute_MHSD(g):
     # dwa razy policzyliśmy tę samą odległość
     sum = sum // 2
 
+    if count == 0:
+        return 0
     return sum / count
 
 
 def mol(g, v):
     dist = shortest_distance(g, source = v)
-    return dist.a.sum() / g.num_vertices()
+    return float(dist.a.sum() / g.num_vertices())
 
 def top_n_molwise(g, n):
     top=[]
@@ -106,17 +110,138 @@ def print_top_degree(top, vertex_names):
         print(vertex_names[i]+": "+str(i.out_degree()))
 
 
+def count_degrees(g):
+    max = 0
+    for v in g.vertices():
+        k = v.out_degree()
+        if k > max:
+            max = k
+
+    degrees = []
+    i = 0
+    while i < max + 1:
+        degrees.append(0)
+        i += 1
+    for v in g.vertices():
+        degrees[v.out_degree()] += 1
+    return degrees
+
+# matplot rysuje dla tego jeden pkt po prostu
+def count_mols(g):
+    max = 0
+    for v in g.vertices():
+        k = mol(g, v)
+        if k > max:
+            max = k
+
+    mols = []
+    i = 0
+    while i < round(max) + 1:
+        mols.append(0)
+        i += 1
+    for v in g.vertices():
+        mols[round(mol(g, v))] += 1
+    return mols
+
+
+
+def get_norm(g):
+    sum = 0
+    for v in g.vertices():
+        sum += distribution_of_direct_distances_wo_norm(g, v)
+    return sum
+
+def distribution_of_direct_distances_wo_norm(g, v):
+    sum = 0
+    for e in v.all_edges():
+        sum += 1 / g.ep.weights[e]
+    return sum
+
+def distribution_of_direct_distances(g, v, norm):
+    return distribution_of_direct_distances_wo_norm(g, v) / norm
+
+def entropy(g):
+    ans = 0
+    norm = get_norm(g)
+    for v in g.vertices():
+        p = distribution_of_direct_distances(g, v, norm)
+        ans += p * math.log(p)
+    return - ans
+
 def get_vertex(g, name: str):
     for v in g.vertices():
         if g.vp.names[v] == name:
             return v
     return None
 
-def test_func(path: str, start: str, end: str):
+def centrality_measures(g):
+    print("entropia: "+str(entropy(g)))
+
+    print("średni stopień separacji: "+str(compute_MHSD(g)))
+
+    print("top stopni:")
+    print_top_degree(top_n_degreewise(g, 5), g.vp.names)
+
+    print("top mol:")
+    print_top_mol(top_n_molwise(g, 5), g)
+
+    vertex_bw, edge_bw = betweenness(g)
+    print("central point dominance: "+
+          str(central_point_dominance(g, vertex_bw)))
+
+    v = get_vertex(g, "KGH")
+    if v != None:
+        print("Pośrednictwo dla KGH: "+str(vertex_bw[v]))
+
+
+def entropy_arr(path: str, dates):
+    arr = []
+    for start, end in dates:
+        arr.append(entropy(mst_from_sheets(path, start, end)))
+    return arr
+
+
+def mhsd_arr(path: str, dates):
+    arr = []
+    for start, end in dates:
+        arr.append(compute_MHSD(mst_from_sheets(path, start, end)))
+    return arr
+
+def mol_arr(path: str, dates, company: str):
+    arr = []
+    for start, end in dates:
+        g = mst_from_sheets(path, start, end)
+        v = get_vertex(g, company)
+        if v != None:
+            arr.append(mol(g,v))
+        else:
+            arr.append(0)
+    return arr
+
+def bw_arr(path: str, dates, company: str):
+    arr = []
+    for start, end in dates:
+        g = mst_from_sheets(path, start, end)
+        v = get_vertex(g, company)
+        if v != None:
+            vertex_bw, edge_bw = betweenness(g)
+            arr.append(vertex_bw[v])
+        else:
+            arr.append(0)
+    return arr
+
+
+
+def mst_from_sheets(path: str, start: str, end: str):
     correlations = mat.extract_companies_correlations(path, start, end)
     g = make_graph(correlations)
-    mst = make_mst(g)
+    return make_mst(g)
 
+
+def test_func(path: str, start: str, end: str):
+    mst_from_sheets(path, start, end)
+    print(start+":"+end)
+    centrality_measures(mst)
 
 
 def main(path):
